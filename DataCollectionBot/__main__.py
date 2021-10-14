@@ -10,6 +10,7 @@ routes = web.RouteTableDef()
 
 @router.register("push")
 async def push_event(event, gh, db, *args, **kwargs):
+    print(event)
     print(event.data)
 
 
