@@ -44,6 +44,7 @@ async def push_event(event, gh, db, *args, **kwargs):
         # increment num_commits in repo_data collection
         db.repo_data.update_one({"repo_full_name": repo_full_name}, {"$inc": {"num_commits": num_commits}})
 
+    print(event.data)
 
 # end of push_event
 
