@@ -35,8 +35,16 @@ async def push_event(event, gh, db, *args, **kwargs):
         "event_type": event_type,
         "num_commits": num_commits
     }
-    # update payload into push collection
-    db.repo_data.update_one({"repo_full_name": repo_full_name}, {"$inc": payload}, upsert = True)
+
+    repo = db.repo_data.find_one({"repo_full_name": repo_full_name})
+
+    if repo == None:
+        db.repo_data.insert_one(payload)
+    else:
+        # increment num_commits in repo_data collection
+        db.repo_data.update_one({"repo_full_name": repo_full_name}, {"$inc": {"num_commits": num_commits}})
+
+
 # end of push_event
 
 """
