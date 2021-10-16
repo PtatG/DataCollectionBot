@@ -10,17 +10,40 @@ routes = web.RouteTableDef()
 
 @router.register("push")
 async def push_event(event, gh, db, *args, **kwargs):
-    print(event)
-    print(event.data)
+    # data collection of push payload
+    repo_owner = event.data["repository"]["owner"]["login"]
+    repo_full_name = event.data["repository"]["full_name"]
+    repo_name = event.data["repository"]["name"]
+    repo_id = event.data["repository"]["id"]
+    repo_url = event.data["repository"]["html_url"]
+    event_type = "push"
+    num_commits = len(event.data["commits"])
+    non_distinct_commit = 0
 
+    # only count distinct number of commits
+    for comm in event.data["commits"]:
+        if not comm["distinct"]:
+            non_distinct_commit += 1
+    num_commits = num_commits - non_distinct_commit
 
+    payload = {
+        "repo_owner": repo_owner,
+        "repo_full_name": repo_full_name,
+        "repo_name": repo_name,
+        "repo_id": repo_id,
+        "repo_url": repo_url,
+        "event_type": event_type,
+        "num_commits": num_commits
+    }
+    # update payload into push collection
+    db.repo_data.update_one({"repo_full_name": repo_full_name}, {"$inc": payload}, upsert = True)
 # end of push_event
 
+"""
 @router.register("issues", action = "opened")
 @router.register("issues", action = "closed")
 async def issue_event(event, gh, db, *args, **kwargs):
-    print(event)
-    print(event.data)
+    # data collection of issue payload
 
 
 # end of issue_event
@@ -29,11 +52,11 @@ async def issue_event(event, gh, db, *args, **kwargs):
 @router.register("pull_request", action = "reopened")
 @router.register("pull_request", action = "closed")
 async def pull_request_event(event, gh, db, *args, **kwargs):
-    print(event)
-    print(event.data)
+    # data collection of pull request payload
 
 
 # end of pull_request_event
+"""
 
 @routes.post("/")
 async def main(request):
