@@ -74,6 +74,7 @@ async def issue_event(event, gh, db, *args, **kwargs):
     issues_closed = 0
     pull_requests_opened = 0
     pull_requests_merged = 0
+
     # track issues opened or closed
     if event.data["action"] == "opened":
         issues_opened = 1
@@ -108,15 +109,57 @@ async def issue_event(event, gh, db, *args, **kwargs):
         }})
 # end of issue_event
 
-"""
 @router.register("pull_request", action = "opened")
 @router.register("pull_request", action = "closed")
 async def pull_request_event(event, gh, db, *args, **kwargs):
     # data collection of pull request payload
+    repo_owner = event.data["repository"]["owner"]["login"]
+    repo_full_name = event.data["repository"]["full_name"]
+    repo_name = event.data["repository"]["name"]
+    repo_id = event.data["repository"]["id"]
+    repo_url = event.data["repository"]["html_url"]
+    commits = 0
+    pushes = 0
+    issues_opened = 0
+    issues_closed = 0
+    pull_requests_opened = 0
+    pull_requests_merged = 0
 
+    # track pull requests opened or closed
+    if event.data["action"] == "opened":
+        pull_requests_opened = 1
+    else:
+        # check if pull request was merged or closed but not merged
+        if event.data["pull_request"]["merged"]
+            pull_requests_merged = 1
 
+    payload = {
+        "repo_owner": repo_owner,
+        "repo_full_name": repo_full_name,
+        "repo_name": repo_name,
+        "repo_id": repo_id,
+        "repo_url": repo_url,
+        "commits": commits,
+        "pushes": pushes,
+        "issues_opened": issues_opened,
+        "issues_closed": issues_closed,
+        "pull_requests_opened": pull_requests_opened,
+        "pull_requests_merged": pull_requests_merged
+    }
+
+    repo = db.repo_data.find_one({"repo_full_name": repo_full_name})
+
+    if repo == None:
+        db.repo_data.insert_one(payload)
+    else:
+        # increment commits in repo_data collection
+        db.repo_data.update_one({
+            "repo_full_name": repo_full_name
+        }, {"$inc": {
+                "pull_requests_opened": pull_requests_opened,
+                "pull_requests_merged": pull_requests_merged
+        }})
 # end of pull_request_event
-"""
 
 @routes.post("/")
 async def main(request):
