@@ -130,7 +130,7 @@ async def pull_request_event(event, gh, db, *args, **kwargs):
         pull_requests_opened = 1
     else:
         # check if pull request was merged or closed but not merged
-        if event.data["pull_request"]["merged"]
+        if event.data["pull_request"]["merged"]:
             pull_requests_merged = 1
 
     payload = {
