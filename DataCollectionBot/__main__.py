@@ -52,13 +52,13 @@ async def push_event(event, gh, db, *args, **kwargs):
         "pull_requests_merged": pull_requests_merged
     }
 
-    repo = db.repo_data.find_one({"repo_full_name": repo_full_name})
+    repo = db.dataBotRepos.find_one({"repo_full_name": repo_full_name})
 
     if repo == None:
-        db.repo_data.insert_one(payload)
+        db.dataBotRepos.insert_one(payload)
     else:
-        # increment commits in repo_data collection
-        db.repo_data.update_one({
+        # increment commits in dataBotRepos collection
+        db.dataBotRepos.update_one({
             "repo_full_name": repo_full_name
         }, {"$inc": {
                 "commits": commits,
@@ -102,13 +102,13 @@ async def issue_event(event, gh, db, *args, **kwargs):
         "pull_requests_merged": pull_requests_merged
     }
 
-    repo = db.repo_data.find_one({"repo_full_name": repo_full_name})
+    repo = db.dataBotRepos.find_one({"repo_full_name": repo_full_name})
 
     if repo == None:
-        db.repo_data.insert_one(payload)
+        db.dataBotRepos.insert_one(payload)
     else:
-        # increment commits in repo_data collection
-        db.repo_data.update_one({
+        # increment commits in dataBotRepos collection
+        db.dataBotRepos.update_one({
             "repo_full_name": repo_full_name
         }, {"$inc": {
                 "issues_opened": issues_opened,
@@ -154,13 +154,13 @@ async def pull_request_event(event, gh, db, *args, **kwargs):
         "pull_requests_merged": pull_requests_merged
     }
 
-    repo = db.repo_data.find_one({"repo_full_name": repo_full_name})
+    repo = db.dataBotRepos.find_one({"repo_full_name": repo_full_name})
 
     if repo == None:
-        db.repo_data.insert_one(payload)
+        db.dataBotRepos.insert_one(payload)
     else:
-        # increment commits in repo_data collection
-        db.repo_data.update_one({
+        # increment commits in dataBotRepos collection
+        db.dataBotRepos.update_one({
             "repo_full_name": repo_full_name
         }, {"$inc": {
                 "pull_requests_opened": pull_requests_opened,
