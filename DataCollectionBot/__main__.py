@@ -4,7 +4,7 @@ Written by: Phillip Tat
 For: UCF Senior Design Project
 Purpose: Collect data into our database whenever there is a push, issue, or pull request event.
 """
-import os, aiohttp, base64, math
+import os, aiohttp, base64
 from aiohttp import web
 from gidgethub import routing, sansio
 from gidgethub import aiohttp as gh_aiohttp
