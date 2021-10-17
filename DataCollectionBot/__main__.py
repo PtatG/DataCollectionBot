@@ -1,6 +1,7 @@
 """
 Project name: Data Collection Bot
 Written by: Phillip Tat
+Date written: 8/23/21
 For: UCF Senior Design Project
 Purpose: Collect data into our database whenever there is a push, issue, or pull request event.
 """
