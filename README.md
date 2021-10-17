@@ -1,2 +1,2 @@
 # DataCollectionBot
-Bot that helps collect github repo data
+Github bot that helps collect github repo data
